@@ -4,15 +4,14 @@ import { UserType } from "../UserContext";
 import DisplayUsers from "../components/DisplayUsers";
 const SearchScreen = () => {
   const { UserId, SetUserId } = useContext(UserType);
+  const { urltohost } = useContext(UserType);
   const [User, SetUser] = useState([]);
 
   useEffect(() => {
     console.log("FetchedUsers");
     async function fetchData() {
       try {
-        const response = await fetch(
-          `https://weary-flannel-shirt-goat.cyclic.app/user/${UserId}`
-        );
+        const response = await fetch(`${urltohost}/user/${UserId}`);
         const data = await response.json();
         SetUser(data);
       } catch (error) {

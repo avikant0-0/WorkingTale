@@ -7,16 +7,14 @@ const DisplayUsers = ({ item }) => {
   const { UserId, SetUserId } = useContext(UserType);
   const [RequestSent, SetRequestSent] = useState(false);
   const [FriendRequest, SetFriendRequest] = useState([]);
+  const { urltohost } = useContext(UserType);
   const [UserFriends, SetUserFriends] = useState([]);
   const SendFriendRequest = async (CurrentUserId, SelectedUserId) => {
     try {
-      const Response = await axios.post(
-        "https://weary-flannel-shirt-goat.cyclic.app/friendrequests",
-        {
-          CurrentUserId: CurrentUserId,
-          SelectedUserId: SelectedUserId,
-        }
-      );
+      const Response = await axios.post(`${urltohost}/friendrequests`, {
+        CurrentUserId: CurrentUserId,
+        SelectedUserId: SelectedUserId,
+      });
     } catch (err) {
       console.log(
         "Error in function SendrequestFuntion in DisplayUsers.js:",
@@ -31,7 +29,7 @@ const DisplayUsers = ({ item }) => {
   const FetchFriendsRequests = async (req, res) => {
     try {
       const response = await axios.get(
-        `https://weary-flannel-shirt-goat.cyclic.app/friend-request/sent/${UserId}`
+        `${urltohost}/friend-request/sent/${UserId}`
       );
       const data = response.data;
       SetFriendRequest(data);
@@ -46,9 +44,7 @@ const DisplayUsers = ({ item }) => {
   };
   const FetchUserFriends = async (req, res) => {
     try {
-      const response = await axios.get(
-        `https://weary-flannel-shirt-goat.cyclic.app/friendss/${UserId}`
-      );
+      const response = await axios.get(`${urltohost}/friendss/${UserId}`);
 
       const data = await response.data;
       SetUserFriends(data);

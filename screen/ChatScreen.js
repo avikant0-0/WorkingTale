@@ -27,6 +27,16 @@ import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
+import { createClient } from "@sanity/client";
+
+const client = createClient({
+  projectId: "fzto7fg7",
+  dataset: "production",
+  apiVersion: "2021-08-29",
+  token:
+    "sk87B48NYZcdfkRULn7ZGcNjCs6uGruCKV4cZQ8RYrM0UNJJmxG7F7He42ohwYAlxXHiqenqZw4sw30DwYhLBIdsMekBLuXtj9syu5ivn0vMk6jrhu4dXr6xfBQmcz3IcmmVKrzWsfsUJG72pfhIavYunnCEpYyasDbcIsRwkbUWPF7bAZkl",
+  useCdn: false,
+});
 const ChatScreen = () => {
   const [ShowEmoji, SetShowEmoji] = useState(false);
   const [Message, SetMessage] = useState("");
@@ -35,6 +45,7 @@ const ChatScreen = () => {
   const [SelectedMessages, SetSelectedMessages] = useState([]);
   const Route = useRoute();
   const { RecieverId } = Route.params;
+  const { urltohost } = useContext(UserType);
   const Navigation = useNavigation();
 
   const ScrollViewRef = useRef(null);
@@ -56,30 +67,24 @@ const ChatScreen = () => {
   const HandleSend = async (MessageType, ImageUrl) => {
     try {
       if (MessageType === "Text") {
-        const Response = await axios.post(
-          "https://weary-flannel-shirt-goat.cyclic.app/messageslol",
-          {
-            SenderId: UserId,
-            RecieverId: RecieverId,
-            MessageType: "Text",
-            MessageText: Message,
-          }
-        );
+        const Response = await axios.post(`${urltohost}/messageslol`, {
+          SenderId: UserId,
+          RecieverId: RecieverId,
+          MessageType: "Text",
+          MessageText: Message,
+        });
 
         getmessages();
         SetMessage("");
         SetSelectedImages("");
       }
       if (MessageType === "Image") {
-        const Response = await axios.post(
-          "https://weary-flannel-shirt-goat.cyclic.app/messageslol",
-          {
-            SenderId: UserId,
-            RecieverId: RecieverId,
-            MessageType: "Image",
-            ImageUrl: ImageUrl,
-          }
-        );
+        const Response = await axios.post(`${urltohost}/messageslol`, {
+          SenderId: UserId,
+          RecieverId: RecieverId,
+          MessageType: "Image",
+          ImageUrl: ImageUrl,
+        });
         getmessages();
         SetMessage("");
         SetSelectedImages("");
@@ -94,9 +99,7 @@ const ChatScreen = () => {
   useEffect(() => {
     const FetchRecieverData = async () => {
       try {
-        const Response = await fetch(
-          `https://weary-flannel-shirt-goat.cyclic.app/othersender/${RecieverId}`
-        );
+        const Response = await fetch(`${urltohost}/othersender/${RecieverId}`);
         const Data = await Response.json();
         // console.log(Data);
         SetRecieverData(Data);
@@ -177,7 +180,7 @@ const ChatScreen = () => {
   const getmessages = async () => {
     try {
       const Response = await fetch(
-        `https://weary-flannel-shirt-goat.cyclic.app/fetchmessages/${UserId}/${RecieverId}`
+        `${urltohost}/fetchmessages/${UserId}/${RecieverId}`
       );
       const Data = await Response.json();
       if (Response.status === 200) {
@@ -206,14 +209,34 @@ const ChatScreen = () => {
 
     if (!result.canceled) {
       // The user didn't cancel the operation, process the selected image
-      const Result = result.assets[0];
+      const Result = result.assets[0].uri;
       console.log(result.assets[0].uri);
-      let newfile = {
-        uri: Result.uri,
-        type: `test/${Result.uri.split(".")[1]}`,
-        name: `test.${Result.uri.split(".")[1]}`,
-      };
-      const ImageUrl = await cloudinary(newfile);
+      const img = await fetch(Result);
+      const bytes = await img.blob();
+      client.assets
+        .upload("image", bytes, { filename: "image" })
+        .then((imageAsset) => {
+          const doc = {
+            _type: "imagelinks",
+            mainImage: {
+              _type: "image",
+              asset: {
+                _type: "reference",
+                _ref: imageAsset._id,
+              },
+            },
+          };
+          console.log(imageAsset.url);
+          setImagetemp(imageAsset.url);
+          client.create(doc).then((response) => {
+            // console.log(response);
+            if (response._createdAt) {
+              console.log("Document created with ID:", response._id);
+            } else {
+              console.log("Error in uploading doc");
+            }
+          });
+        });
     }
   };
   const [Imagetemp, setImagetemp] = useState();
@@ -271,12 +294,9 @@ const ChatScreen = () => {
   // To Delete Messages
   const DeleteMessages = async (SelectedMessages) => {
     try {
-      const Response = await axios.post(
-        "https://weary-flannel-shirt-goat.cyclic.app/DeleteMessages",
-        {
-          SelectedMessages: SelectedMessages,
-        }
-      );
+      const Response = await axios.post(`${urltohost}/DeleteMessages`, {
+        SelectedMessages: SelectedMessages,
+      });
       if (Response.status === 200) {
         SetSelectedMessages((prevSelectedMessages) =>
           prevSelectedMessages.filter((id) => !SelectedMessages.includes(id))

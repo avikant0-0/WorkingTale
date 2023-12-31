@@ -9,16 +9,18 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import TaleLogo from "../images/TaleLogo.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { UserType } from "../UserContext";
 const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [Gmail, SetGmail] = useState("");
   const [Password, SetPassword] = useState("");
   const Navigation = useNavigation();
+  const { urltohost } = useContext(UserType);
   let Token = "";
   useEffect(() => {
     const CheckLoginStatus = async () => {
@@ -46,14 +48,13 @@ const LoginScreen = () => {
       Alert.alert("Login Error!", "Please enter Gmail And Password!!");
     } else {
       axios
-        .post("https://weary-flannel-shirt-goat.cyclic.app/login", User)
+        .post(`${urltohost}/login`, User)
         .then((res) => {
           console.log(res);
 
           console.log(res.data);
           if (res.data.Token) {
             Token = res.data.Token;
-
             AsyncStorage.setItem("AuthToken", Token);
             Navigation.replace("Home");
           } else if (res.data.Message) {

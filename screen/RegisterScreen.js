@@ -9,11 +9,15 @@ import {
   Alert,
   ScrollView,
 } from "react-native";
-import { React, useState } from "react";
+import { React, useContext, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import TaleLogo from "../images/TaleLogo.jpg";
 import axios from "axios";
+import { UserType } from "../UserContext";
+
 const RegisterScreen = () => {
+  const { urltohost } = useContext(UserType);
+  // console.log(urltohost);
   const [isLoading, setIsLoading] = useState(true);
   const [Name, SetName] = useState("");
   const [Gmail, SetGmail] = useState("");
@@ -28,7 +32,7 @@ const RegisterScreen = () => {
     };
 
     axios
-      .post("https://weary-flannel-shirt-goat.cyclic.app/register", data)
+      .post(`${urltohost}/register`, data)
       .then((res) => {
         // console.log(res);
         Alert.alert("Registred Successfully!", "Your account has been created");

@@ -8,17 +8,15 @@ const DisplayFriendRequests = ({ item, FriendArray, SetFriendArray }) => {
   console.log(item);
   const Navigation = useNavigation();
   const { UserId, SetUserId } = useContext(UserType);
+  const { urltohost } = useContext(UserType);
   console.log(UserId);
   AcceptRequest = async (SenderId) => {
     const RecieverId = UserId;
     try {
-      const Response = await axios.post(
-        "https://weary-flannel-shirt-goat.cyclic.app/acceptfriendrequests",
-        {
-          SenderId: SenderId,
-          RecieverId: RecieverId,
-        }
-      );
+      const Response = await axios.post(`${urltohost}/acceptfriendrequests`, {
+        SenderId: SenderId,
+        RecieverId: RecieverId,
+      });
       SetFriendArray(FriendArray.filter((request) => request._id !== SenderId));
 
       if (Response.status === 200) {

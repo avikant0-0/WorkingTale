@@ -17,6 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Chats from "../components/Chats";
 import { Feather } from "@expo/vector-icons";
 const HomeScreen = () => {
+  const { urltohost } = useContext(UserType);
   const Navigation = useNavigation();
   const { UserId, SetUserId } = useContext(UserType);
 
@@ -95,9 +96,7 @@ const HomeScreen = () => {
         const Token = await AsyncStorage.getItem("AuthToken");
         console.log("Token is", Token);
         SetUserId(Token);
-        const response = await fetch(
-          `https://weary-flannel-shirt-goat.cyclic.app/friends/${Token}`
-        );
+        const response = await fetch(`${urltohost}/friends/${Token}`);
         const Data = await response.json();
         SetFriends(Data);
         if (response.status === 200) {

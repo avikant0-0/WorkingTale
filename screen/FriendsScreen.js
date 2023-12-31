@@ -7,12 +7,13 @@ const FriendsScreen = () => {
     FetchFriendRequests();
   }, []);
   const { UserId, SetUserId } = useContext(UserType);
+  const { urltohost } = useContext(UserType);
   const [FriendArray, SetFriendArray] = useState([]);
   FetchFriendRequests = async () => {
     try {
       console.log(UserId);
       const Response = await fetch(
-        `https://weary-flannel-shirt-goat.cyclic.app/recievefriendrequest/${UserId}`
+        `${urltohost}/recievefriendrequest/${UserId}`
       );
       const ResponseData = await Response.json();
       console.log(ResponseData);
