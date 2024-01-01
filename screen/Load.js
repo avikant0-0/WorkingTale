@@ -24,7 +24,7 @@ const Load = () => {
       )
       .then((data) => {
         seturltohost(data[0].hostlink);
-        Navigation.navigate("Login");
+        Navigation.replace("Login");
       });
   }, []);
   useEffect(() => {}, []);

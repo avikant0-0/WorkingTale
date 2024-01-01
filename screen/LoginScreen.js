@@ -29,8 +29,6 @@ const LoginScreen = () => {
         if (Token) {
           Navigation.replace("Home");
           console.log(Token);
-        } else {
-          Navigation.navigate("Login");
         }
       } catch (err) {
         console.log("Some error in async function in LoginScreen.js:", err);
