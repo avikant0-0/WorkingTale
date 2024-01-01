@@ -1,6 +1,7 @@
 import {
   Image,
   KeyboardAvoidingView,
+  Modal,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -28,6 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { createClient } from "@sanity/client";
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const client = createClient({
   projectId: "fzto7fg7",
@@ -47,8 +49,9 @@ const ChatScreen = () => {
   const { RecieverId } = Route.params;
   const { urltohost } = useContext(UserType);
   const Navigation = useNavigation();
-
+  const [imagevisible, setimagevisible] = useState(false);
   const ScrollViewRef = useRef(null);
+
   useEffect(() => {
     scrollToBottom();
   }, []);
@@ -227,7 +230,8 @@ const ChatScreen = () => {
             },
           };
           console.log(imageAsset.url);
-          setImagetemp(imageAsset.url);
+
+          HandleSend("Image", imageAsset.url);
           client.create(doc).then((response) => {
             // console.log(response);
             if (response._createdAt) {
@@ -239,37 +243,7 @@ const ChatScreen = () => {
         });
     }
   };
-  const [Imagetemp, setImagetemp] = useState();
-  const cloudinary = async (newfile) => {
-    const data = new FormData();
-    data.append("file", newfile);
-    data.append("upload_preset", "instaclone");
-    data.append("cloud_name", "dezkysoaa");
 
-    try {
-      fetch("https://api.cloudinary.com/v1_1/dezkysoaa/image/upload", {
-        method: "post",
-        body: data,
-      })
-        .then((res) => res.json())
-        .then((data1) => {
-          // console.log("FJNIFD", data1);
-          setImagetemp(data1.url);
-        });
-      // console.log("cloudinary data", data);
-    } catch (error) {
-      console.error("Error uploading image: ", error);
-    }
-  };
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
-  useEffect(() => {
-    // Check if it's not the initial load before calling HandleSend
-    if (!isInitialLoad) {
-      HandleSend("Image", Imagetemp);
-    } else {
-      setIsInitialLoad(false);
-    }
-  }, [Imagetemp]);
   //To selected Messages
   const HandleLongPress = (message) => {
     //Check if the message is already selected
@@ -309,6 +283,7 @@ const ChatScreen = () => {
       console.log("error in function deletemessages", error);
     }
   };
+
   return (
     <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#F0F0F0" }}>
       <ScrollView
@@ -366,7 +341,6 @@ const ChatScreen = () => {
               const IsSelected = SelectedMessages.includes(item._id);
               return (
                 <Pressable
-                  onLongPress={() => HandleLongPress(item)}
                   key={idx}
                   style={[
                     item.SenderId._id === tempuserid
@@ -389,14 +363,44 @@ const ChatScreen = () => {
                     IsSelected && { width: "100%", backgroundColor: "#F0FFFF" },
                   ]}
                 >
-                  <View>
+                  <Pressable
+                    pressDuration={0}
+                    onPress={() => setimagevisible(true)}
+                    onLongPress={() => HandleLongPress(item)}
+                  >
                     <Image
                       source={{
                         uri: item.ImageUrl,
                       }}
                       style={{ width: 200, height: 200, borderRadius: 10 }}
                     />
-                  </View>
+
+                    <Modal visible={imagevisible} transparent={true}>
+                      <ImageViewer imageUrls={[{ url: item.ImageUrl }]} />
+                      <Pressable
+                        style={{
+                          position: "absolute",
+                          height: 40,
+                          width: 40,
+                          top: 60,
+                          right: 10,
+                        }}
+                        onPress={() => setimagevisible(false)}
+                      >
+                        <Text
+                          style={{
+                            color: "white",
+                            backgroundColor: "black",
+                            alignSelf: "center",
+                            fontSize: 30,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          X
+                        </Text>
+                      </Pressable>
+                    </Modal>
+                  </Pressable>
                   <Text
                     style={{
                       textAlign: "right",
