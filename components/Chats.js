@@ -19,7 +19,9 @@ const Chats = ({ item }) => {
         Navigation.navigate("ChatScreen", { RecieverId: item._id })
       }
     >
-      <TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => Navigation.navigate("Modal1", { url: item.Images })}
+      >
         <Image
           source={{
             uri: item.Images,

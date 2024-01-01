@@ -9,6 +9,8 @@ import SearchScreen from "./screen/SearchScreen";
 import FriendsScreen from "./screen/FriendsScreen";
 import ChatScreen from "./screen/ChatScreen";
 import Load from "./screen/Load";
+import ProfileScreen from "./screen/ProfileScreen";
+import Modal1 from "./components/Modal";
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -50,6 +52,16 @@ const StackNavigator = () => {
           name="ChatScreen"
           component={ChatScreen}
           options={{ headerShown: true, title: "Messages" }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileScreen}
+          options={{ headerShown: true, title: "YourProfile!" }}
+        />
+        <Stack.Screen
+          name="Modal1"
+          component={Modal1}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

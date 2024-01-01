@@ -29,8 +29,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
 import { createClient } from "@sanity/client";
-import ImageViewer from "react-native-image-zoom-viewer";
-
+import Modal1 from "../components/Modal";
 const client = createClient({
   projectId: "fzto7fg7",
   dataset: "production",
@@ -134,25 +133,36 @@ const ChatScreen = () => {
             </View>
           ) : (
             <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <Image
-                style={{
-                  width: 45,
-                  height: 45,
-                  borderRadius: 25,
-                  resizeMode: "cover",
-                  marginHorizontal: 5,
-                }}
-                source={{ uri: RecieverData.Images }}
-              />
-              <Text
-                style={{
-                  marginHorizontal: 5,
-                  fontSize: 20,
-                  fontWeight: "bold",
-                }}
+              <TouchableOpacity
+                onPress={() =>
+                  Navigation.navigate("Modal1", { url: RecieverData.Images })
+                }
               >
-                {RecieverData.Name}
-              </Text>
+                <Image
+                  style={{
+                    width: 45,
+                    height: 45,
+                    borderRadius: 25,
+                    resizeMode: "cover",
+                    marginHorizontal: 5,
+                  }}
+                  source={{ uri: RecieverData.Images }}
+                />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => Navigation.navigate("Profile", { RecieverData })}
+              >
+                <Text
+                  style={{
+                    marginHorizontal: 5,
+                    fontSize: 20,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {RecieverData.Name}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         </View>
@@ -365,7 +375,9 @@ const ChatScreen = () => {
                 >
                   <Pressable
                     pressDuration={0}
-                    onPress={() => setimagevisible(true)}
+                    onPress={() =>
+                      Navigation.navigate("Modal1", { url: item.ImageUrl })
+                    }
                     onLongPress={() => HandleLongPress(item)}
                   >
                     <Image
@@ -374,32 +386,6 @@ const ChatScreen = () => {
                       }}
                       style={{ width: 200, height: 200, borderRadius: 10 }}
                     />
-
-                    <Modal visible={imagevisible} transparent={true}>
-                      <ImageViewer imageUrls={[{ url: item.ImageUrl }]} />
-                      <Pressable
-                        style={{
-                          position: "absolute",
-                          height: 40,
-                          width: 40,
-                          top: 60,
-                          right: 10,
-                        }}
-                        onPress={() => setimagevisible(false)}
-                      >
-                        <Text
-                          style={{
-                            color: "white",
-                            backgroundColor: "black",
-                            alignSelf: "center",
-                            fontSize: 30,
-                            fontWeight: "bold",
-                          }}
-                        >
-                          X
-                        </Text>
-                      </Pressable>
-                    </Modal>
                   </Pressable>
                   <Text
                     style={{
