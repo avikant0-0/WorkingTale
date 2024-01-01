@@ -1,8 +1,9 @@
 import { StyleSheet, Text, View } from "react-native";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { createClient } from "@sanity/client";
 import { UserType } from "../UserContext";
+import axios from "axios";
 
 const client = createClient({
   projectId: "fzto7fg7",
@@ -13,7 +14,8 @@ const client = createClient({
   useCdn: false,
 });
 const Load = () => {
-  const { seturltohost } = useContext(UserType);
+  const { urltohost, seturltohost } = useContext(UserType);
+  const { UserId } = useContext(UserType);
   const Navigation = useNavigation();
   useEffect(() => {
     client
@@ -27,6 +29,7 @@ const Load = () => {
         Navigation.replace("Login");
       });
   }, []);
+
   useEffect(() => {}, []);
   return (
     <View style={{ marginTop: 150 }}>

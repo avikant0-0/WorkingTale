@@ -11,6 +11,8 @@ import ChatScreen from "./screen/ChatScreen";
 import Load from "./screen/Load";
 import ProfileScreen from "./screen/ProfileScreen";
 import Modal1 from "./components/Modal";
+import UpdateProfilePage from "./screen/UpdateProfilePage";
+import Load2 from "./components/Load2";
 const StackNavigator = () => {
   const Stack = createNativeStackNavigator();
 
@@ -56,11 +58,21 @@ const StackNavigator = () => {
         <Stack.Screen
           name="Profile"
           component={ProfileScreen}
-          options={{ headerShown: true, title: "YourProfile!" }}
+          options={{ headerShown: true, title: "Profile Page" }}
         />
         <Stack.Screen
           name="Modal1"
           component={Modal1}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="UpdateProfilePage"
+          component={UpdateProfilePage}
+          options={{ headerShown: true, title: "Update Your Profile " }}
+        />
+        <Stack.Screen
+          name="Load2"
+          component={Load2}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

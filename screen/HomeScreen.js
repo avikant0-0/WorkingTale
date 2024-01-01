@@ -12,6 +12,7 @@ import { useNavigation } from "@react-navigation/native";
 import TaleLogo from "../images/TaleLogo.jpg";
 import { Ionicons } from "@expo/vector-icons";
 import { UserType } from "../UserContext";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import Chats from "../components/Chats";
@@ -49,6 +50,13 @@ const HomeScreen = () => {
       ),
       headerRight: () => (
         <View style={{ flexDirection: "row" }}>
+          <MaterialIcons
+            name="account-circle"
+            size={30}
+            color="black"
+            onPress={() => Navigation.navigate("Load2")}
+          />
+          <View style={{ width: 20 }}></View>
           <Ionicons
             name="people-outline"
             size={30}
@@ -78,7 +86,7 @@ const HomeScreen = () => {
     async function removeItemValue(key) {
       try {
         await AsyncStorage.removeItem(key);
-        console.log("Data removed");
+        console.log("Data removeds");
         return true;
       } catch (exception) {
         console.log(exception);
@@ -110,13 +118,15 @@ const HomeScreen = () => {
     FetchData();
   }, []);
 
-  console.log(Friends1);
+  // console.log(Friends1);
 
   return (
     <ScrollView>
       <Pressable style={{ padding: 5 }}>
         <TouchableOpacity
-          onPress={() => FetchData()}
+          onPress={() => {
+            FetchData();
+          }}
           style={{
             alignSelf: "center",
             height: 35,
