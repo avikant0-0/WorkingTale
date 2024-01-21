@@ -12,6 +12,7 @@ const FriendsScreen = () => {
   FetchFriendRequests = async () => {
     try {
       console.log(UserId);
+
       const Response = await fetch(
         `${urltohost}/recievefriendrequest/${UserId}`
       );

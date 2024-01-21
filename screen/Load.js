@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { createClient } from "@sanity/client";
 import { UserType } from "../UserContext";
+
 import axios from "axios";
 
 const client = createClient({
@@ -13,6 +14,8 @@ const client = createClient({
     "sk87B48NYZcdfkRULn7ZGcNjCs6uGruCKV4cZQ8RYrM0UNJJmxG7F7He42ohwYAlxXHiqenqZw4sw30DwYhLBIdsMekBLuXtj9syu5ivn0vMk6jrhu4dXr6xfBQmcz3IcmmVKrzWsfsUJG72pfhIavYunnCEpYyasDbcIsRwkbUWPF7bAZkl",
   useCdn: false,
 });
+// const socket = io.connect("http://192.168.127.73:3002");
+
 const Load = () => {
   const { urltohost, seturltohost } = useContext(UserType);
   const { UserId } = useContext(UserType);
@@ -26,6 +29,8 @@ const Load = () => {
       )
       .then((data) => {
         seturltohost(data[0].hostlink);
+        // seturltohost("http://192.168.127.73:3000");
+
         Navigation.replace("Login");
       });
   }, []);

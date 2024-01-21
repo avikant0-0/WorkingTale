@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import { UserType } from "../UserContext";
 import DisplayUsers from "../components/DisplayUsers";
@@ -25,13 +25,13 @@ const SearchScreen = () => {
 
   console.log(User);
   return (
-    <View>
+    <ScrollView>
       <View style={{ padding: 10 }}>
         {User.map((item, index) => (
           <DisplayUsers key={index} item={item} />
         ))}
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

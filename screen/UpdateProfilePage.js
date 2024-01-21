@@ -24,10 +24,10 @@ const ProfileScreen = ({ route }) => {
   const Navigation = useNavigation();
   const [loading, setloading] = useState(false);
   let RecieverData = route.params;
-  //   console.log("sdsddasd", RecieverData);
-  console.log(RecieverData.data);
+  console.log("sdsddasd", RecieverData);
+  // console.log(RecieverData.data);
   const ImageUrl = RecieverData.data.Images;
-  console.log(ImageUrl);
+  console.log(RecieverData.data.Friends.length);
   const { urltohost } = useContext(UserType);
   UploadProfileImage = async () => {
     setloading(true);

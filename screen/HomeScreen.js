@@ -105,10 +105,10 @@ const HomeScreen = () => {
         console.log("Token is", Token);
         SetUserId(Token);
         const response = await fetch(`${urltohost}/friends/${Token}`);
-        const Data = await response.json();
-        SetFriends(Data);
+        let Data = await response.json();
+        SetFriends(Data.friendsDetails);
         if (response.status === 200) {
-          // console.log(Data);
+          // console.log(Data.friendsDetails);
           console.log("REcieved friends dataa");
         }
       } catch (err) {

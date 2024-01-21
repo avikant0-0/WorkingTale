@@ -11,6 +11,7 @@ import {
   View,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+
 import React, {
   useContext,
   useEffect,
@@ -22,14 +23,14 @@ import { Entypo } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import EmojiSelector from "react-native-emoji-selector";
-import { UserType } from "../UserContext";
+import { UserContext, UserType } from "../UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 import axios from "axios";
+import io from "socket.io-client";
 import { createClient } from "@sanity/client";
-import Modal1 from "../components/Modal";
 const client = createClient({
   projectId: "fzto7fg7",
   dataset: "production",
@@ -38,19 +39,20 @@ const client = createClient({
     "sk87B48NYZcdfkRULn7ZGcNjCs6uGruCKV4cZQ8RYrM0UNJJmxG7F7He42ohwYAlxXHiqenqZw4sw30DwYhLBIdsMekBLuXtj9syu5ivn0vMk6jrhu4dXr6xfBQmcz3IcmmVKrzWsfsUJG72pfhIavYunnCEpYyasDbcIsRwkbUWPF7bAZkl",
   useCdn: false,
 });
+const socket = io.connect("wss://websockettale.glitch.me");
 const ChatScreen = () => {
   const [ShowEmoji, SetShowEmoji] = useState(false);
   const [Message, SetMessage] = useState("");
   const [SelectedImages, SetSelectedImages] = useState("");
-  const { UserId, SetUserId } = useContext(UserType);
+  const { UserId } = useContext(UserType);
   const [SelectedMessages, SetSelectedMessages] = useState([]);
   const Route = useRoute();
   const { RecieverId } = Route.params;
+  const { EncrytionString } = Route.params;
   const { urltohost } = useContext(UserType);
   const Navigation = useNavigation();
   const [imagevisible, setimagevisible] = useState(false);
   const ScrollViewRef = useRef(null);
-
   useEffect(() => {
     scrollToBottom();
   }, []);
@@ -75,7 +77,7 @@ const ChatScreen = () => {
           MessageType: "Text",
           MessageText: Message,
         });
-
+        socket.emit("message_sent", { EncrytionString });
         getmessages();
         SetMessage("");
         SetSelectedImages("");
@@ -87,14 +89,26 @@ const ChatScreen = () => {
           MessageType: "Image",
           ImageUrl: ImageUrl,
         });
-        getmessages();
         SetMessage("");
         SetSelectedImages("");
+
+        socket.emit("message_sent", { EncrytionString });
+        getmessages();
       }
     } catch (err) {
       console.log("Error In ChatScreen.js", err);
     }
   };
+  useEffect(() => {
+    getmessages();
+    socket.emit("join_room", { EncrytionString });
+  }, []);
+  useEffect(() => {
+    socket.on("recieve_message", (data) => {
+      getmessages();
+      console.log("SDUHISD");
+    });
+  }, [socket]);
 
   const [RecieverData, SetRecieverData] = useState([]);
   //For showing reciever data in headers
@@ -198,15 +212,12 @@ const ChatScreen = () => {
       const Data = await Response.json();
       if (Response.status === 200) {
         SetFetchedMessages(Data);
-        console.log(Data);
+        // console.log(Data);
       }
     } catch (err) {
       console.log("error in funcn getmessages", err);
     }
   };
-  useEffect(() => {
-    getmessages();
-  }, []);
 
   const tempuserid = UserId.slice(1, -1);
   const FormatTime = (time) => {
@@ -223,7 +234,7 @@ const ChatScreen = () => {
     if (!result.canceled) {
       // The user didn't cancel the operation, process the selected image
       const Result = result.assets[0].uri;
-      console.log(result.assets[0].uri);
+      // console.log(result.assets[0].uri);
       const img = await fetch(Result);
       const bytes = await img.blob();
       client.assets
@@ -239,7 +250,7 @@ const ChatScreen = () => {
               },
             },
           };
-          console.log(imageAsset.url);
+          // console.log(imageAsset.url);
 
           HandleSend("Image", imageAsset.url);
           client.create(doc).then((response) => {

@@ -12,13 +12,14 @@ const Load2 = () => {
   useEffect(() => {
     const gettoken = async () => {
       let Token = await AsyncStorage.getItem("AuthToken");
+
       let data = await axios.get(
         `${urltohost}/othersender/${Token.slice(1, -1)}`
       );
       try {
         if (Token) {
           data = data.data;
-          console.log("TOHKEEN IS", data);
+          console.log("TOHKEEN IS", data.Friends);
           Navigation.replace("UpdateProfilePage", { data });
         }
       } catch (err) {

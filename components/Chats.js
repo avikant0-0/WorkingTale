@@ -4,6 +4,7 @@ import { useNavigation } from "@react-navigation/native";
 
 const Chats = ({ item }) => {
   const Navigation = useNavigation();
+  // console.log("sdfdsfs", item);
   return (
     <TouchableOpacity
       style={{
@@ -16,7 +17,10 @@ const Chats = ({ item }) => {
         borderRadius: 25,
       }}
       onPress={() =>
-        Navigation.navigate("ChatScreen", { RecieverId: item._id })
+        Navigation.navigate("ChatScreen", {
+          RecieverId: item._id,
+          EncrytionString: item.encrytionstring,
+        })
       }
     >
       <TouchableOpacity
