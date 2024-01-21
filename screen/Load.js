@@ -29,7 +29,6 @@ const Load = () => {
       )
       .then((data) => {
         seturltohost(data[0].hostlink);
-        // seturltohost("http://192.168.127.73:3000");
 
         Navigation.replace("Login");
       });
