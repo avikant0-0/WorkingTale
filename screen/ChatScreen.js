@@ -70,7 +70,7 @@ const ChatScreen = () => {
 
   const HandleSend = async (MessageType, ImageUrl) => {
     try {
-      if (MessageType === "Text") {
+      if (MessageType === "Text" && Message !== "") {
         const Response = await axios.post(`${urltohost}/messageslol`, {
           SenderId: UserId,
           RecieverId: RecieverId,
